@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start">
+      <h2 style="margin:0">📖 {{ lesson.title }}</h2>
+      {% if current_user and current_user.role == 'teacher' %}
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <a href="/lesson/{{ lesson.id }}/edit" class="btn btn-secondary" style="padding:8px 12px">✏️ Edit</a>
+        <a href="/assignment/create/{{ lesson.id }}" class="btn btn-primary" style="padding:8px 12px">➕ Assignment</a>
+        <a href="/quiz/create/{{ lesson.id }}" class="btn btn-primary" style="padding:8px 12px">📝 Quiz</a>
+      </div>
+      {% endif %}
+    </div>
+    
+    <hr style="margin:16px 0">
+    
+    <!-- Lesson Content -->
+    <div class="lesson-content" style="margin-bottom:16px; line-height:1.7; color:#333">
+      {{ lesson.content }}
+    </div>
+    
+    <!-- Attachments -->
+    {% if lesson.attachments %}
+      {% set ext = lesson.attachments.rsplit('.', 1)[-1].lower() if '.' in lesson.attachments else '' %}
+      <div style="margin-bottom:16px; padding:12px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border)">
+        {% if ext in ['png','jpg','jpeg','gif','webp'] %}
+          <img src="/uploads/{{ lesson.attachments }}" alt="attachment" style="max-width:100%; height:auto; border-radius:var(--radius); display:block">
+        {% elif ext == 'pdf' %}
+          <iframe src="/uploads/{{ lesson.attachments }}" style="width:100%; height:600px; border:0; border-radius:var(--radius)"></iframe>
+        {% else %}
+          <p style="margin:0"><a href="/uploads/{{ lesson.attachments }}" target="_blank" rel="noopener" class="link-button">📎 Open Attachment</a></p>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <hr style="margin:16px 0">
+    
+    <!-- Assignments Section -->
+    <h3>✍️ Assignments</h3>
+    {% if assignments %}
+      <div style="display:grid; gap:12px">
+        {% for a in assignments %}
+          <div style="padding:12px; background:var(--surface); border-radius:var(--radius); border-left:4px solid var(--accent)">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start">
+              <div>
+                <h4 style="margin:0 0 4px 0"><a href="/assignment/{{ a.id }}" style="text-decoration:none; color:var(--accent)">{{ a.title }}</a></h4>
+                <p class="small" style="margin:0; color:var(--muted)">Due: {{ a.due_date or 'No deadline' }}</p>
+              </div>
+              <div style="display:flex; gap:8px">
+                <a href="/assignment/{{ a.id }}" class="link-button">📤 Submit</a>
+                {% if current_user and current_user.role == 'teacher' %}
+                  <a href="/assignment/{{ a.id }}/edit" class="link-button">✏️</a>
+                  <form method="post" action="/assignment/{{ a.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this assignment?')">
+                    <button type="submit" class="btn" style="background:#dc3545; color:#fff; padding:6px 10px; margin:0">🗑️</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:16px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0; color:var(--muted)">📭 No assignments yet</p>
+        {% if current_user and current_user.role == 'teacher' %}
+          <a href="/assignment/create/{{ lesson.id }}" class="btn btn-primary" style="margin-top:12px">➕ Create Assignment</a>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <!-- Quizzes Section -->
+    <h3 style="margin-top:24px">📝 Quizzes</h3>
+    {% if quizzes %}
+      <div style="display:grid; gap:12px">
+        {% for q in quizzes %}
+          <div style="padding:12px; background:var(--surface); border-radius:var(--radius); border-left:4px solid var(--success)">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start">
+              <h4 style="margin:0"><a href="/quiz/{{ q.id }}" style="text-decoration:none; color:var(--accent)">Quiz {{ loop.index }}</a></h4>
+              <a href="/quiz/{{ q.id }}" class="btn btn-primary" style="padding:8px 12px">📝 Take Quiz</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:16px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0; color:var(--muted)">📭 No quizzes yet</p>
+        {% if current_user and current_user.role == 'teacher' %}
+          <a href="/quiz/create/{{ lesson.id }}" class="btn btn-primary" style="margin-top:12px">📝 Create Quiz</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

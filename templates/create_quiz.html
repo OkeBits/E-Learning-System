@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:700px; margin:0 auto">
+    <h2 style="margin:0 0 16px 0">📝 Create New Quiz</h2>
+    
+    <div style="background:var(--surface); padding:16px; border-radius:var(--radius); margin-bottom:20px">
+      <p style="margin:0 0 12px 0"><strong>📋 Format:</strong> Enter questions as JSON array</p>
+      <p style="margin:0; font-size:0.9rem; color:var(--muted)">Copy and modify this example:</p>
+      <pre style="background:#fff; padding:12px; border-radius:6px; border:1px solid var(--border); overflow-x:auto; font-size:0.85rem; margin:8px 0 0 0">[
+  {"question":"What is 2+2?","choices":["2","3","4","5"],"answer":2},
+  {"question":"What is the capital of France?","choices":["London","Paris","Berlin","Madrid"],"answer":1}
+]</pre>
+    </div>
+    
+    <form method="post">
+      <div style="margin-bottom:24px">
+        <label for="questions" style="display:block; margin-bottom:6px; font-weight:600">Quiz Questions (JSON) *</label>
+        <textarea id="questions" name="questions" placeholder='[{"question":"...","choices":["a","b","c"],"answer":0}]' style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); min-height:200px; font-size:0.9rem; font-family:monospace" required></textarea>
+        <p class="small" style="margin:8px 0 0 0; color:var(--muted)">💡 "answer" is the index (0-based) of the correct choice</p>
+      </div>
+      
+      <div style="display:flex; gap:12px">
+        <button type="submit" class="btn btn-primary" style="padding:12px 24px">✓ Create Quiz</button>
+        <a href="#" onclick="history.back(); return false" class="btn btn-secondary" style="padding:12px 24px">✕ Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

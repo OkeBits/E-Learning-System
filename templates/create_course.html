@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:500px; margin:0 auto">
+    <h2 style="margin:0 0 16px 0">📚 Create New Course</h2>
+    
+    <form method="post">
+      <div style="margin-bottom:16px">
+        <label for="title" style="display:block; margin-bottom:6px; font-weight:600">Course Title *</label>
+        <input id="title" name="title" type="text" required placeholder="e.g. Mathematics 101" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); font-size:1rem">
+      </div>
+      
+      <div style="margin-bottom:24px">
+        <label for="description" style="display:block; margin-bottom:6px; font-weight:600">Course Description</label>
+        <textarea id="description" name="description" placeholder="Describe what students will learn in this course..." style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); min-height:120px; font-size:1rem; font-family:inherit"></textarea>
+      </div>
+      
+      <div style="display:flex; gap:12px">
+        <button type="submit" class="btn btn-primary" style="padding:12px 24px">✓ Create Course</button>
+        <a href="/teacher/classes" class="btn btn-secondary" style="padding:12px 24px">✕ Cancel</a>
+      </div>
+    </form>
+    
+    <hr style="margin:16px 0">
+    <p class="small" style="color:var(--muted); margin:0">💡 After creation, you'll receive a unique class code to share with students so they can join</p>
+  </div>
+</div>
+{% endblock %}

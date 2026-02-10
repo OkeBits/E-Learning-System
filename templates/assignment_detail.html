@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h2 style="margin:0 0 8px 0">📤 {{ assignment.title }}</h2>
+    <p class="small" style="margin:0; color:var(--muted)">Due: <strong>{{ assignment.due_date }}</strong></p>
+    
+    <hr style="margin:16px 0">
+    
+    <div style="background:var(--surface); padding:16px; border-radius:var(--radius); margin-bottom:16px">
+      {{ assignment.description }}
+    </div>
+    
+    <!-- Teacher View: All Submissions -->
+    {% if current_user.role in ['teacher','admin'] %}
+      <h3>📋 Student Submissions</h3>
+      
+      {% if submissions %}
+        <div style="overflow-x:auto">
+          <table style="width:100%; border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--accent-light); border-bottom:2px solid var(--accent)">
+                <th style="padding:12px; text-align:left; font-weight:600">Student</th>
+                <th style="padding:12px; text-align:left; font-weight:600">Submitted</th>
+                <th style="padding:12px; text-align:left; font-weight:600">File</th>
+                <th style="padding:12px; text-align:left; font-weight:600">Grade</th>
+                <th style="padding:12px; text-align:left; font-weight:600">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in submissions %}
+                <tr style="border-bottom:1px solid var(--border)">
+                  <td style="padding:12px">{{ s.student_name }}</td>
+                  <td style="padding:12px"><span class="badge" style="background:var(--success-light); color:var(--success)">{{ s.submitted_at }}</span></td>
+                  <td style="padding:12px">
+                    {% if s.file_path %}
+                      <a href="/uploads/{{ s.file_path }}" class="link-button">📎 Download</a>
+                    {% else %}
+                      <span style="color:var(--muted)">—</span>
+                    {% endif %}
+                  </td>
+                  <td style="padding:12px">{{ s.grade if s.grade is not none else '—' }}</td>
+                  <td style="padding:12px">
+                    <button class="toggle-grade-form" data-id="{{ s.id }}" style="background:var(--accent); color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer">
+                      ✏️ Grade
+                    </button>
+                  </td>
+                </tr>
+                <tr class="grade-form-row" id="grade-{{ s.id }}" style="display:none; background:var(--surface)">
+                  <td colspan="5" style="padding:16px">
+                    <form method="post" action="/assignment/{{ assignment.id }}/grade/{{ s.id }}">
+                      <div style="display:flex; gap:12px; align-items:flex-end">
+                        <div>
+                          <label style="display:block; margin-bottom:6px; font-weight:600">Grade</label>
+                          <input name="grade" type="number" placeholder="e.g. 95" value="{{ s.grade if s.grade is not none else '' }}" style="padding:8px; border:1px solid var(--border); border-radius:var(--radius); width:100px">
+                        </div>
+                        <div style="flex:1">
+                          <label style="display:block; margin-bottom:6px; font-weight:600">Feedback</label>
+                          <textarea name="feedback" placeholder="Provide feedback for the student..." style="padding:8px; border:1px solid var(--border); border-radius:var(--radius); width:100%; min-height:60px">{{ s.feedback if s.feedback is not none else '' }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">✓ Save</button>
+                        <button type="button" class="toggle-grade-form" data-id="{{ s.id }}" style="background:#ccc; color:#333; border:none; padding:8px 12px; border-radius:4px; cursor:pointer">✕ Cancel</button>
+                      </div>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div style="padding:16px; background:var(--surface); border-radius:var(--radius); text-align:center">
+          <p style="margin:0; color:var(--muted)">📭 No submissions yet</p>
+        </div>
+      {% endif %}
+    
+    <!-- Student View: My Submission -->
+    {% else %}
+      <h3>📝 Your Submission</h3>
+      
+      {% if student_submission %}
+        <div style="background:var(--surface); padding:16px; border-radius:var(--radius); margin-bottom:16px; border-left:4px solid var(--success)">
+          <p><strong>Submitted:</strong> {{ student_submission.submitted_at }}</p>
+          
+          {% if student_submission.file_path %}
+            <p><strong>File:</strong> <a href="/uploads/{{ student_submission.file_path }}" class="link-button">📎 Download</a></p>
+          {% endif %}
+          
+          {% if student_submission.text %}
+            <p><strong>Notes:</strong></p>
+            <p style="background:#fff; padding:12px; border-radius:4px">{{ student_submission.text }}</p>
+          {% endif %}
+          
+          <hr style="margin:12px 0">
+          
+          <p><strong>Grade:</strong> <span style="font-size:1.2rem; color:var(--accent)">{{ student_submission.grade if student_submission.grade is not none else 'Not graded yet' }}</span></p>
+          
+          {% if student_submission.feedback %}
+            <p><strong>Teacher Feedback:</strong></p>
+            <div style="background:#fff; padding:12px; border-radius:4px; border-left:4px solid var(--accent)">
+              {{ student_submission.feedback }}
+            </div>
+          {% endif %}
+        </div>
+      {% else %}
+        <div style="padding:24px; background:var(--surface); border-radius:var(--radius); text-align:center">
+          <p style="margin:0 0 16px 0; color:var(--muted)">📭 You have not submitted this assignment yet</p>
+          <a href="/assignment/submit/{{ assignment.id }}" class="btn btn-primary">➜ Submit Now</a>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-grade-form').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const id = this.getAttribute('data-id');
+    const row = document.getElementById('grade-' + id);
+    if (row.style.display === 'none') {
+      row.style.display = 'table-row';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+});
+</script>
+{% endblock %}

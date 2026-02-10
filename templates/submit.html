@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:600px; margin:0 auto">
+    <h2 style="margin:0 0 16px 0">📤 Submit Assignment</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+      <div style="margin-bottom:16px">
+        <label for="file" style="display:block; margin-bottom:6px; font-weight:600">Upload File (Optional)</label>
+        <input id="file" type="file" name="file" style="display:block; padding:8px; border:1px dashed var(--border); border-radius:var(--radius); width:100%">
+        <p class="small" style="margin:6px 0 0 0; color:var(--muted)">📎 You can upload your work as a document, image, or any file</p>
+      </div>
+      
+      <div style="margin-bottom:24px">
+        <label for="text" style="display:block; margin-bottom:6px; font-weight:600">Notes & Comments</label>
+        <textarea id="text" name="text" placeholder="Add any notes or comments about your submission..." style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); min-height:120px; font-size:1rem; font-family:inherit"></textarea>
+      </div>
+      
+      <div style="display:flex; gap:12px">
+        <button type="submit" class="btn btn-primary" style="padding:12px 24px">✓ Submit Assignment</button>
+        <a href="#" onclick="history.back(); return false" class="btn btn-secondary" style="padding:12px 24px">✕ Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

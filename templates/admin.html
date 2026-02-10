@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card admin-panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+      <h2 style="margin:0">👨‍💼 Admin Panel</h2>
+      <div style="display:flex; gap:8px">
+        <a href="/admin/deleted" class="btn btn-secondary" style="padding:8px 12px">🗑️ Deleted Users</a>
+        <a href="/admin/deleted_courses" class="btn btn-secondary" style="padding:8px 12px">📚 Deleted Courses</a>
+      </div>
+    </div>
+    
+    <hr style="margin:16px 0">
+    
+    <h3>👥 User Management</h3>
+    
+    {% if users %}
+      <div style="overflow-x:auto">
+        <table style="width:100%; border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--accent-light); border-bottom:2px solid var(--accent)">
+              <th style="padding:12px; text-align:left; font-weight:600">Name</th>
+              <th style="padding:12px; text-align:left; font-weight:600">Email</th>
+              <th style="padding:12px; text-align:left; font-weight:600">Current Role</th>
+              <th style="padding:12px; text-align:left; font-weight:600">School ID</th>
+              <th style="padding:12px; text-align:left; font-weight:600">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px"><strong>{{ u.name }}</strong></td>
+                <td style="padding:12px">{{ u.email }}</td>
+                <td style="padding:12px">
+                  <span class="role-badge {{ u.role }}">
+                    {% if u.role == 'admin' %}👨‍💼 Admin{% elif u.role == 'teacher' %}👨‍🏫 Teacher{% else %}👨‍🎓 Student{% endif %}
+                  </span>
+                </td>
+                <td style="padding:12px">{{ u.school_id or '—' }}</td>
+                <td style="padding:12px">
+                  <div style="display:flex; gap:8px; flex-wrap:wrap">
+                    <a href="/admin/user/{{ u.id }}/edit" class="link-button">✏️ Edit</a>
+                    
+                    {% if current_user and current_user.id != u.id %}
+                      <form method="post" action="/admin/user/{{ u.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this user? This action cannot be undone.')">
+                        <button type="submit" class="link-button" style="background:transparent; color:#dc3545; border:none; padding:0; cursor:pointer">🗑️ Delete</button>
+                      </form>
+                    {% endif %}
+                    
+                    <!-- Role Selection -->
+                    <select style="padding:6px; border:1px solid var(--border); border-radius:4px; font-size:0.9rem" onchange="
+                      const newRole = this.value;
+                      if (newRole) {
+                        const url = '/admin/user/{{ u.id }}/set_role/' + newRole;
+                        if (confirm('Change role to ' + newRole + '?')) {
+                          window.location.href = url;
+                        } else {
+                          this.value = '';
+                        }
+                      }
+                    ">
+                      <option value="">Change role...</option>
+                      <option value="student">👨‍🎓 Student</option>
+                      <option value="teacher">👨‍🏫 Teacher</option>
+                      <option value="admin">👨‍💼 Admin</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="padding:16px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0; color:var(--muted)">📭 No users found</p>
+      </div>
+    {% endif %}
+    
+    <hr style="margin:24px 0">
+    
+    <h3>📄 Learning Resources Management</h3>
+    <div style="overflow-x:auto">
+      <table style="width:100%; border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--accent-light); border-bottom:2px solid var(--accent)">
+            <th style="padding:12px; text-align:left; font-weight:600">Title</th>
+            <th style="padding:12px; text-align:left; font-weight:600">Type</th>
+            <th style="padding:12px; text-align:left; font-weight:600">Teacher</th>
+            <th style="padding:12px; text-align:left; font-weight:600">Date</th>
+            <th style="padding:12px; text-align:left; font-weight:600">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in resources %}
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:12px"><strong><a href="/resource/{{ r.id }}" target="_blank" style="color:var(--accent); text-decoration:none">{{ r.title }}</a></strong></td>
+              <td style="padding:12px"><span class="badge">{{ r.type }}</span></td>
+              <td style="padding:12px">{{ r.teacher_name }}</td>
+              <td style="padding:12px">{{ r.created_at[:10] }}</td>
+              <td style="padding:12px">
+                <form method="post" action="/admin/resource/{{ r.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this resource?');">
+                  <button type="submit" class="link-button" style="color:var(--danger); border:none; padding:0; background:transparent; cursor:pointer">🗑️ Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5" style="padding:12px; text-align:center; color:var(--muted)">No resources found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

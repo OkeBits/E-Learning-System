@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:720px;margin:20px auto">
+    <h2>Add Resource</h2>
+    <form method="post" enctype="multipart/form-data">
+      <label>Type</label>
+      <select name="type">
+        <option value="material">Material</option>
+        <option value="module">Module</option>
+        <option value="book">Book</option>
+      </select>
+      <label>Title</label>
+      <input name="title" required />
+      <label>Content</label>
+      <textarea name="content" rows="6"></textarea>
+      <label>Attachment</label>
+      <input type="file" name="attachment" />
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn btn-primary" type="submit">Create</button>
+        <a class="btn btn-secondary" href="/dashboard">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="text-align:center">
+    <div style="font-size:3rem; margin:0 0 16px 0">
+      {% if score >= 80 %}
+        🎉
+      {% elif score >= 60 %}
+        ✓
+      {% else %}
+        📚
+      {% endif %}
+    </div>
+    
+    <h2 style="margin:0 0 8px 0">Quiz Completed!</h2>
+    
+    <div style="font-size:2.5rem; font-weight:700; color:var(--accent); margin:16px 0">{{ score }}%</div>
+    
+    <div style="background:var(--surface); padding:16px; border-radius:var(--radius); margin:16px 0; border-left:4px solid var(--accent)">
+      <p style="margin:0"><strong>Correct Answers:</strong> {{ correct }} out of {{ total }} questions</p>
+    </div>
+    
+    {% if score >= 80 %}
+      <p style="color:var(--success); font-weight:600; margin:12px 0">Excellent work! You've mastered this topic! 🌟</p>
+    {% elif score >= 60 %}
+      <p style="color:#f57c00; font-weight:600; margin:12px 0">Good job! Keep practicing to improve your score.</p>
+    {% else %}
+      <p style="color:var(--danger); font-weight:600; margin:12px 0">Try reviewing the material and take the quiz again.</p>
+    {% endif %}
+    
+    <hr style="margin:20px 0">
+    
+    <div style="display:flex; gap:12px; justify-content:center">
+      <a href="/dashboard" class="btn btn-primary">← Back to Dashboard</a>
+      <a href="#" onclick="history.back(); return false" class="btn btn-secondary">Try Again</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

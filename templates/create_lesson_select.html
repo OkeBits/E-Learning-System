@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:960px;margin:20px auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px">
+      <div>
+        <h2 style="margin:0">Create Lesson</h2>
+        <div class="small" style="color:var(--muted);margin-top:6px">Choose a class to add a new lesson to</div>
+      </div>
+      <div>
+        <a class="btn btn-secondary" href="/teacher/classes">Manage Classes</a>
+      </div>
+    </div>
+
+    {% if classes and classes|length > 0 %}
+      <div class="course-list" style="margin-top:6px">
+        {% for c in classes %}
+          <div class="course-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <h4 style="margin:0">{{ c.title or ('Course ' ~ loop.index) }}</h4>
+                <p class="small" style="margin:6px 0 0 0">{{ c.description or 'No description' }}</p>
+              </div>
+              <div style="text-align:right">
+                <span class="badge">{{ c.code }}</span>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+              <a class="link-button" href="/course/{{ c.id }}">Open</a>
+              <a class="btn btn-primary" href="/lesson/create/{{ c.id }}">Create Lesson</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>You don't have any classes yet. <a href="/teacher/classes">Create a class first</a>.</p>
+    {% endif %}
+
+    <div style="margin-top:14px;text-align:right">
+      <a class="btn btn-secondary" href="/dashboard">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

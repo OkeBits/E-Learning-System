@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start">
+      <div>
+        <h2 style="margin:0 0 8px 0">📚 {{ course.title }}</h2>
+        <p class="small" style="margin:0">{{ course.description }}</p>
+      </div>
+      {% if current_user and current_user.role == 'teacher' and current_user.id == course.teacher_id %}
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <a href="/course/{{ course.id }}/edit" class="btn btn-secondary" style="padding:8px 12px">✏️ Edit</a>
+        <a href="/lesson/create/{{ course.id }}" class="btn btn-primary" style="padding:8px 12px">➕ Add Lesson</a>
+        <form method="post" action="/course/{{ course.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this class? This cannot be undone.')">
+          <button type="submit" class="btn" style="background:#dc3545; color:#fff; padding:8px 12px">🗑️ Delete</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+    
+    <hr style="margin:16px 0">
+    
+    <h3 style="margin-top:0">📖 Course Lessons</h3>
+    
+    {% if lessons %}
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px">
+        {% for l in lessons %}
+          <div style="padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); transition:all 0.2s">
+            <h4 style="margin:0 0 8px 0"><a href="/lesson/{{ l.id }}" style="text-decoration:none; color:var(--accent)">{{ l.title }}</a></h4>
+            <p class="small" style="margin:0; color:var(--muted)">Click to view content and assignments</p>
+            
+            <div style="display:flex; gap:8px; margin-top:12px">
+              <a href="/lesson/{{ l.id }}" class="link-button" style="flex:1">➜ Open</a>
+              {% if current_user and current_user.role == 'teacher' and current_user.id == course.teacher_id %}
+                <a href="/lesson/{{ l.id }}/edit" class="link-button">✏️</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:24px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0; color:var(--muted)">📭 No lessons yet</p>
+        {% if current_user and current_user.role == 'teacher' and current_user.id == course.teacher_id %}
+          <a href="/lesson/create/{{ course.id }}" class="btn btn-primary" style="margin-top:12px">➕ Add First Lesson</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

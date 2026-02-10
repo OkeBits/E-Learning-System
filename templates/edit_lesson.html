@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:960px;margin:20px auto;padding:20px">
+    <div class="grid" style="grid-template-columns: 1fr 320px; gap:18px;">
+      <div>
+        <div class="edit-lesson-header" style="margin-bottom:14px">
+          <h2 style="margin:0">Edit Lesson</h2>
+          <p class="small" style="margin:6px 0 0 0;color:var(--muted)">Make changes to the lesson content and save.</p>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="course-form">
+          <label>Title</label>
+          <input name="title" value="{{ lesson.title }}" required>
+          <label>Content</label>
+          <textarea name="content" rows="10">{{ lesson.content }}</textarea>
+          <label>Attachment (optional)</label>
+          <input type="file" name="attachment">
+          <div class="form-actions" style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn btn-primary" type="submit">Save Changes</button>
+            <a class="btn btn-secondary" href="/course/{{ lesson.course_id }}">Cancel</a>
+          </div>
+        </form>
+      </div>
+      <aside>
+        <div class="card preview-card">
+          <h4 style="margin-top:0">Preview</h4>
+          <div class="lesson-content" style="max-height:320px;overflow:auto">{{ lesson.content }}</div>
+          {% if lesson.attachments %}
+            {% set ext = lesson.attachments.rsplit('.', 1)[-1].lower() if '.' in lesson.attachments else '' %}
+            <div style="margin-top:10px" class="small">
+              {% if ext in ['png','jpg','jpeg','gif','webp'] %}
+                <div style="max-width:100%;overflow:hidden;border-radius:8px;border:1px solid #eef7ff;padding:6px;background:#fff"><img src="/uploads/{{ lesson.attachments }}" alt="attachment" style="max-width:100%;height:auto;display:block;margin:0 auto" /></div>
+              {% elif ext == 'pdf' %}
+                <div style="border:1px solid #eef7ff;border-radius:8px;overflow:hidden"><iframe src="/uploads/{{ lesson.attachments }}" style="width:100%;height:320px;border:0"></iframe></div>
+              {% else %}
+                <p>Attachment: <a href="/uploads/{{ lesson.attachments }}" target="_blank" rel="noopener">Open file</a></p>
+              {% endif %}
+            </div>
+          {% endif %}
+          <hr />
+          <p class="small">Course: <strong><a href="/course/{{ lesson.course_id }}">Open course</a></strong></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

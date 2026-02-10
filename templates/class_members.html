@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h2>Students</h2>
+    <table class="table">
+      <thead><tr><th>Name</th><th>Email</th><th>School ID</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td>{{ s.name }}</td>
+          <td>{{ s.email }}</td>
+          <td>{{ s.school_id or '—' }}</td>
+          <td>{{ s.joined_at }}</td>
+          <td>
+            <form method="post" action="/teacher/class/{{ course_id }}/remove_member/{{ s.id }}" style="display:inline">
+              <button type="submit" class="btn btn-secondary">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No students yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="margin-top:12px"><a href="/teacher/classes" class="link-button">Back to classes</a></p>
+  </div>
+</div>
+{% endblock %}

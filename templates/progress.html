@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h2 style="margin:0 0 8px 0">📊 My Progress</h2>
+    <p class="small" style="margin:0; color:var(--muted)">{{ current_user.name }} - Learning Journey</p>
+    
+    <hr style="margin:16px 0">
+    
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px">
+      <!-- Lessons Completed Card -->
+      <div style="padding:20px; background:var(--surface); border-radius:var(--radius); border-left:4px solid var(--accent); text-align:center">
+        <div style="font-size:2.5rem; font-weight:700; color:var(--accent)">{{ completed }}</div>
+        <p style="margin:8px 0 0 0; color:var(--muted)">of {{ total }} Lessons Completed</p>
+        <div style="width:100%; height:8px; background:#eef6ff; border-radius:999px; margin-top:12px; overflow:hidden">
+          <div style="height:100%; background:var(--accent); width:{{ (completed / total * 100) if total > 0 else 0 }}%"></div>
+        </div>
+        <p style="margin:8px 0 0 0; font-size:0.85rem; color:var(--muted)">{{ ((completed / total * 100) if total > 0 else 0) | round }}% Complete</p>
+      </div>
+      
+      <!-- Quiz Score Card -->
+      <div style="padding:20px; background:var(--surface); border-radius:var(--radius); border-left:4px solid var(--success); text-align:center">
+        <div style="font-size:2.5rem; font-weight:700; color:var(--success)">
+          {% if avg_score is not none %}
+            {{ avg_score | round(0) | int }}%
+          {% else %}
+            —
+          {% endif %}
+        </div>
+        <p style="margin:8px 0 0 0; color:var(--muted)">Average Quiz Score</p>
+        <div style="margin-top:12px">
+          {% if avg_score is not none %}
+            {% if avg_score >= 80 %}
+              <span style="background:#d4edda; color:#155724; padding:6px 12px; border-radius:4px; font-size:0.85rem">🌟 Excellent</span>
+            {% elif avg_score >= 60 %}
+              <span style="background:#fff3cd; color:#856404; padding:6px 12px; border-radius:4px; font-size:0.85rem">👍 Good</span>
+            {% else %}
+              <span style="background:#f8d7da; color:#721c24; padding:6px 12px; border-radius:4px; font-size:0.85rem">📚 Keep Learning</span>
+            {% endif %}
+          {% else %}
+            <span style="color:var(--muted); font-size:0.85rem">No quiz attempts yet</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <hr style="margin:24px 0">
+    
+    <!-- Tips -->
+    <div style="background:var(--accent-light); padding:16px; border-radius:var(--radius); border-left:4px solid var(--accent)">
+      <h4 style="margin:0 0 8px 0">💡 Keep Going!</h4>
+      <p style="margin:0; color:var(--muted); font-size:0.95rem">
+        {% if completed < total %}
+          You're making great progress! Continue completing lessons to improve your learning.
+        {% else %}
+          🎉 You've completed all lessons! Challenge yourself with the quizzes.
+        {% endif %}
+      </p>
+    </div>
+    
+    <div style="margin-top:16px; text-align:center">
+      <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="max-width:600px; margin:0 auto">
+    <h2 style="margin:0 0 16px 0">📤 Create New Assignment</h2>
+    
+    <form method="post">
+      <div style="margin-bottom:16px">
+        <label for="title" style="display:block; margin-bottom:6px; font-weight:600">Assignment Title *</label>
+        <input id="title" name="title" type="text" required placeholder="e.g. Chapter 5 Exercise Problems" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); font-size:1rem">
+      </div>
+      
+      <div style="margin-bottom:16px">
+        <label for="description" style="display:block; margin-bottom:6px; font-weight:600">Instructions & Description</label>
+        <textarea id="description" name="description" placeholder="Explain what students should do for this assignment..." style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); min-height:120px; font-size:1rem; font-family:inherit"></textarea>
+      </div>
+      
+      <div style="margin-bottom:24px">
+        <label for="due_date" style="display:block; margin-bottom:6px; font-weight:600">Due Date *</label>
+        <input id="due_date" name="due_date" type="date" required style="width:100%; padding:12px; border:1px solid var(--border); border-radius:var(--radius); font-size:1rem">
+      </div>
+      
+      <div style="display:flex; gap:12px">
+        <button type="submit" class="btn btn-primary" style="padding:12px 24px">✓ Create Assignment</button>
+        <a href="#" onclick="history.back(); return false" class="btn btn-secondary" style="padding:12px 24px">✕ Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

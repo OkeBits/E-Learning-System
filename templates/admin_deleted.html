@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card admin-panel">
+    <h2>Deleted Users</h2>
+    <table class="table">
+      <thead><tr><th>ID</th><th>User ID</th><th>Name</th><th>Deleted At</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.user_id }}</td>
+          <td>{{ r.name or r.snapshot.name or '—' }}</td>
+          <td>{{ r.deleted_at }}</td>
+          <td>
+            <form method="post" action="/admin/deleted/{{ r.id }}/restore" style="display:inline">
+              <button class="btn btn-primary" type="submit">Restore</button>
+            </form>
+            <form method="post" action="/admin/deleted/{{ r.id }}/remove" style="display:inline;margin-left:8px">
+              <button class="btn btn-secondary" type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No deleted users.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="margin-top:12px"><a href="/admin" class="link-button">Back to admin</a></p>
+  </div>
+</div>
+{% endblock %}

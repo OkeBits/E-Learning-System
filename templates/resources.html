@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+      <h2 style="margin:0">📄 Learning Resources</h2>
+      {% if current_user and current_user.role == 'teacher' %}
+        <a href="/resources/create" class="btn btn-primary">➕ Add Resource</a>
+      {% endif %}
+    </div>
+    
+    <hr style="margin:16px 0">
+    
+    {% if resources %}
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px">
+        {% for r in resources %}
+          <div style="padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); display:flex; flex-direction:column">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px">
+              <h4 style="margin:0; flex:1"><a href="/resource/{{ r.id }}" style="text-decoration:none; color:var(--accent)">{{ r.title }}</a></h4>
+              <span class="badge" style="background:var(--accent-light); color:var(--accent); padding:4px 8px; border-radius:4px; font-size:0.85rem; white-space:nowrap">{{ r.type }}</span>
+            </div>
+            
+            <p class="small" style="margin:0 0 12px 0; color:var(--muted)">{{ (r.content or '')[:100] }}{% if (r.content or '')|length > 100 %}...{% endif %}</p>
+            
+            <p class="small" style="margin:0 0 12px 0; color:var(--muted); border-top:1px solid var(--border); padding-top:12px">by <strong>{{ r.teacher_name or 'Unknown' }}</strong></p>
+            
+            <div style="display:flex; gap:8px; margin-top:auto">
+              <a href="/resource/{{ r.id }}" class="link-button">📖 View</a>
+              {% if current_user and current_user.role == 'teacher' and r.teacher_id == current_user.id %}
+                <a href="/resources/create" class="link-button">✏️ Edit</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:32px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0 0 16px 0; color:var(--muted); font-size:1.05rem">📭 No resources available yet</p>
+        {% if current_user and current_user.role == 'teacher' %}
+          <a href="/resources/create" class="btn btn-primary">➕ Create First Resource</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

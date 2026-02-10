@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+      <h2 style="margin:0">📚 My Classes</h2>
+      <a href="/course/create" class="btn btn-primary">➕ New Class</a>
+    </div>
+    
+    <hr style="margin:16px 0">
+    
+    {% if classes %}
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px">
+        {% for c in classes %}
+          <div style="padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); transition:all 0.2s; border-left:4px solid var(--accent)">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px">
+              <h4 style="margin:0">{{ c.title or ('Course ' ~ loop.index) }}</h4>
+              <span class="badge" style="background:var(--accent-light); color:var(--accent); padding:4px 8px; border-radius:4px; font-size:0.85rem">{{ c.code }}</span>
+            </div>
+            
+            <p class="small" style="margin:0 0 12px 0; color:var(--muted)">{{ c.description or 'No description' }}</p>
+            
+            <hr style="margin:12px 0; border:none; border-top:1px solid var(--border)">
+            
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              <a href="/course/{{ c.id }}" class="link-button">📖 Open</a>
+              <a href="/teacher/class/{{ c.id }}/members" class="link-button">👥 Students</a>
+              <a href="/course/{{ c.id }}/edit" class="link-button">✏️ Edit</a>
+              <form method="post" action="/course/{{ c.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this class? This cannot be undone.')">
+                <button type="submit" class="link-button" style="background:transparent; color:#dc3545; border:none; padding:0; cursor:pointer">🗑️ Delete</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:32px; background:var(--surface); border-radius:var(--radius); text-align:center">
+        <p style="margin:0 0 16px 0; color:var(--muted); font-size:1.1rem">📭 You haven't created any classes yet</p>
+        <a href="/course/create" class="btn btn-primary">➕ Create Your First Class</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
