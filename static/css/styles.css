@@ -641,7 +641,7 @@ ul li a:hover {
 	width: 140px;
 	height: 140px;
 	border-radius: 50%;
-	background: conic-gradient(#ffffff var(--deg, 0deg), #18045f 0deg);
+	background: conic-gradient(#0a0061 var(--deg, 0deg), #ffffff 0deg);
 	display: flex;
 	align-items: center;
 	justify-content: center;
