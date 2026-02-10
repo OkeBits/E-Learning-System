@@ -10,12 +10,13 @@
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px">
       <!-- Lessons Completed Card -->
       <div style="padding:20px; background:var(--surface); border-radius:var(--radius); border-left:4px solid var(--accent); text-align:center">
+        {% set pct = (completed / total * 100) if total > 0 else 0 %}
         <div style="font-size:2.5rem; font-weight:700; color:var(--accent)">{{ completed }}</div>
         <p style="margin:8px 0 0 0; color:var(--muted)">of {{ total }} Lessons Completed</p>
         <div style="width:100%; height:8px; background:#eef6ff; border-radius:999px; margin-top:12px; overflow:hidden">
-          <div style="height:100%; background:var(--accent); width:{{ (completed / total * 100) if total > 0 else 0 }}%"></div>
+          <div {{ 'style="height:100%; background:var(--accent); width:' ~ pct ~ '"' | safe }}></div>
         </div>
-        <p style="margin:8px 0 0 0; font-size:0.85rem; color:var(--muted)">{{ ((completed / total * 100) if total > 0 else 0) | round }}% Complete</p>
+        <p style="margin:8px 0 0 0; font-size:0.85rem; color:var(--muted)">{{ pct | round }}% Complete</p>
       </div>
       
       <!-- Quiz Score Card -->
